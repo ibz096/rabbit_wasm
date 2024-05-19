@@ -1,6 +1,7 @@
+const { argv } = require('node:process');
 const data = require('./decodedpng.js');
 const cryptoJs = require('crypto-js');
-const embed_url = "https://rabbitstream.net/v2/embed-4/OjT6VRrSi0YE?z=";
+const embed_url = `https://rabbitstream.net/v2/embed-4/${argv[2]}?z=`;
 const referrer = "https://flixhq.to/";
 const user_agent = "Mozilla/5.0 (X11; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0";
 
@@ -564,8 +565,8 @@ const main = async (xrax: string) => {
     "method": "GET",
     "mode": "cors"
   })).json();
-  console.log("\nResponse from getSources:");
-  console.log(resp_json);
+  // console.log("\nResponse from getSources:");
+  // console.log(resp_json);
   let encrypted = resp_json.sources;
   var Q3 = fake_window.localStorage.kversion;
   let tostr = '';
@@ -580,11 +581,18 @@ const main = async (xrax: string) => {
   });
 
   let str = btoa(String.fromCharCode.apply(null, num));
-  var real = Z(encrypted, str);
+  var decoded_sources = Z(encrypted, str);
 
-  console.log("\n Decoded sources:");
-  console.log(real);
+  // console.log("\n Decoded sources:");
+  // console.log(decoded_sources);
+
+  let new_links_object = resp_json
+  const [{ file: fileUrl }] = decoded_sources
+  new_links_object.sources = fileUrl
+
+  console.log(new_links_object);
+  
 }
 
 
-main('OjT6VRrSi0YE'); //change this value to the embed-id you want to extract from
+main(argv[2]); //change this value to the embed-id you want to extract from
